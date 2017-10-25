@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', #https://docs.djangoproject.com/en/dev/howto/static-files/deployment/
     'tbc_sri_app',
     'import_export',
 )
@@ -100,7 +100,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+#https://docs.djangoproject.com/en/dev/howto/static-files/deployment/
+#https://scotch.io/tutorials/working-with-django-templates-static-files#toc-settings-for-managing-static-files
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+STATIC_ROOT =  os.path.join(BASE_DIR, 'staticfiles')
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True

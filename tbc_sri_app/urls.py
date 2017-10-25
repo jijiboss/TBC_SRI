@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^(?P<question_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^(?P<namae>[^0-9])/$', views.helloWorld, name='helloWorld'),
     url(r'^$', views.index, name='index'),
+    url(r'^sritable$', views.sritable, name='sritable'),
 
 ]
