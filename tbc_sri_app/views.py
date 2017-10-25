@@ -8,3 +8,8 @@ def detail(request, question_id):
 
 def helloWorld(request, namae):
     return HttpResponse("Hello world %s!" % namae)
+
+def index(request):
+    #add code here
+    #https://docs.djangoproject.com/en/1.11/intro/tutorial03/#a-shortcut-render
+    return render(request, 'tbc_sri_app/index.html')
