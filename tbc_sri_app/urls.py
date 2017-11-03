@@ -14,5 +14,7 @@ urlpatterns = [
     url(r'^(?P<namae>[^0-9])/$', views.helloWorld, name='helloWorld'),
     url(r'^$', views.index, name='index'),
     url(r'^sritable$', views.sritable, name='sritable'),
+    url(r'^sritable3$', views.sritable3, name='sritable3'),
+    url(r'^jquery01$', views.jquery01, name='jquery01'),
 
 ]

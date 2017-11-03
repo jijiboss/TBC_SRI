@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>jsGrid - Basic Scenario with my data</title>
+    <link rel="stylesheet" type="text/css" href="{% static "jsgrid-1.5.3/demos/demos.css" %}"/>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600,400' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="{% static "jsgrid-1.5.3/css/jsgrid.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "jsgrid-1.5.3/css/theme.css" %}"/>
+
+    <script src="{% static "jsgrid-1.5.3/external/jquery/jquery-1.8.3.js" %}"></script>
+    <!--script src="{% static "jsgrid-1.5.3/demos/db.js" %}"></script-->
+
+    <script src="{% static "jsgrid-1.5.3/src/jsgrid.core.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/jsgrid.load-indicator.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/jsgrid.load-strategies.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/jsgrid.sort-strategies.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/jsgrid.field.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/fields/jsgrid.field.text.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/fields/jsgrid.field.number.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/fields/jsgrid.field.select.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.js" %}"></script>
+    <script src="{% static "jsgrid-1.5.3/src/fields/jsgrid.field.control.js" %}"></script>
+</head>
+<body>
+    <h1>Basic Scenario with my data</h1>
+    <div id="jsGrid"></div>
+
+    {% if context %}
+      Entering shipments
+      <script>
+          $(function() {
+              //$("#jsGrid") refrences the <div> above
+              $("#jsGrid").jsGrid({
+                  height: "70%",
+                  width: "100%",
+                  filtering: true,
+                  editing: true,
+                  inserting: true,
+                  sorting: true,
+                  paging: true,
+                  autoload: true,
+                  pageSize: 15,
+                  pageButtonCount: 5,
+                  deleteConfirm: "Do you really want to delete the client?",
+                  controller: context,
+                  fields: [
+                      { name: "mbol", type: "text", width: 150 },
+                      { name: "container", type: "text", width: 50 },
+  //                    { name: "Address", type: "text", width: 200 },
+  //                    { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
+  //                    { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+                      { type: "control" }
+                  ]
+              });
+
+          });
+      </script>
+    {% else %}
+      Data was not passed over properly
+    {% endif %}
+</body>
+</html>
