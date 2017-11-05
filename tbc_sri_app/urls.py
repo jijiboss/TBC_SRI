@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^sritable$', views.sritable, name='sritable'),
     url(r'^sritable3$', views.sritable3, name='sritable3'),
     url(r'^jquery01$', views.jquery01, name='jquery01'),
+    url(r'^myLoadData$', views.myLoadData, name='myLoadData'),
 
 ]
