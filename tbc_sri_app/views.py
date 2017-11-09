@@ -66,8 +66,8 @@ def myUpdateData(request):
     if request.method == 'PUT':
         inMethod = "method: " + request.method + ". "
         inMIME = "MIME: " + request.content_type + ". "
-        #inJSON = "JSON: " + json.loads(request.body) + ". "
-        return HttpResponse(inMethod + inMIME)
-#       return HttpResponse(request.body)
+#        inPayLoad = "payload: " + request.body + " "
+#        return HttpResponse(inPayLoad) # this doesn't work due to bytes vs str
+        return HttpResponse(request.body)
     else:
         return HttpResponse("response no update")

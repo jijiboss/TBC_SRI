@@ -84,8 +84,6 @@
                       $.ajax({
                         url: 'myUpdateData',
                         type: 'PUT',
-                        contentType : "application/json; charset=utf-8",
-                        dataType: 'json',
                         data: item,
                         headers: {'X-CSRFToken': '{{ csrf_token }}'},
                       }).done(function(response){
