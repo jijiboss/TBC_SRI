@@ -35,6 +35,11 @@
               //$("#jsGrid") refrences the <div> above
               console.log("entering function")
               $("#jsGrid").jsGrid({
+
+                  onItemUpdating: function(args){
+                    previousItem = args.previousItem;
+                  },
+
                   height: "100%",
                   width: "100%",
                   filtering: true,
@@ -46,29 +51,53 @@
                   pageSize: 15,
                   pageButtonCount: 5,
                   deleteConfirm: "Do you really want to delete the client?",
-                  controller: {
-                    loadData: function(){
-                      var d = $.Deferred();
-                      $.ajax({
-                        url: 'myLoadData',
-                        type: 'GET',
-                        contentType : "application/json; charset=utf-8",
-                        dataType: 'json',
-                      }).done(function(response){
-                        console.log("just response", response)
-                        d.resolve(response);
-                      }).fail(function(response){
-                        console.log("fail", responsef)
-                        d.reject();
-                      });
-                      return d.promise();
-                    }
-                  },
+
                   fields: [
                       { name: "mbol", type: "text", width: 100 },
                       { name: "container", type: "text", width: 100 },
                       { type: "control" }
-                  ]
+                  ],
+
+                  controller: {
+
+                    loadData: function(){
+                        var d = $.Deferred();
+                        $.ajax({
+                          url: 'myLoadData',
+                          type: 'GET',
+                          contentType : "application/json; charset=utf-8",
+                          dataType: 'json',
+                        }).done(function(response){
+                          console.log("load response", response)
+                          d.resolve(response);
+                        }).fail(function(response){
+                          console.log("Load failed", responsef)
+                          d.reject();
+                        });
+                        return d.promise();
+                    },
+
+                    updateItem: function(item){
+                      console.log("updateItem data", item);
+                      console.log("previousItem", previousItem);
+                      var d = $.Deferred();
+                      $.ajax({
+                        url: 'myUpdateData',
+                        type: 'PUT',
+                        contentType : "application/json; charset=utf-8",
+                        dataType: 'json',
+                        data: item,
+                        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                      }).done(function(response){
+                        console.log("update response", response)
+                        d.resolve(response);
+                      }).fail(function(response){
+                        console.log("Update failed response", response.responseText)
+                        d.resolve(previousItem);
+                      });
+                      return d.promise();
+                    }
+                  },
               });
           });
       </script>

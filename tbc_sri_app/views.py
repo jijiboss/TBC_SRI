@@ -3,10 +3,19 @@ from django.template import loader
 from .models import lnos_statusPipeLine
 from django.forms import model_to_dict
 from django.http import HttpResponse
+from django.http import HttpRequest #https://docs.djangoproject.com/en/dev/ref/request-response/
 from django.core import serializers
 import json
-import pdb
+from django.views.decorators.csrf import ensure_csrf_cookie
 
+#=================================
+#for debugging
+#https://pythonconquerstheuniverse.wordpress.com/2009/09/10/debugging-in-python/
+#import pdb
+
+#just for experimenting purposes. DO not use "csrf_exempt" in production
+#from django.views.decorators.csrf import csrf_exempt
+#=================================
 def detail(request, question_id):
     return HttpResponse("You're looking at question %s." % question_id)
 
@@ -31,16 +40,34 @@ def sritable3(request):
 
 #I can test this method by calling this URL on the browser directly.
 #if successful, i shoudl see the query results.
-#To see if the data was returned to the calling HTML, go to the Network taband lok for the XHR entry.
+#To see if the data was returned to the calling HTML, go to the Network tab and look for the XHR entry.
 #The Response tab will have the actual returned data, or "failure".
+#Also can test out this query and result by tryin them on the python shell;
+#   python manage.py shell
 def myLoadData(request):
 
     #run the query
     myQuerySet = lnos_statusPipeLine.objects.values('mbol','container')
-    #create an empty dict to put the data in
+    #cast from QuerySet to array
     try:
         response_data = list(myQuerySet)
     except:
         response_data = 'Failed to query data.'
-
+    #convert the aray to JSON and return
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+#just for experimenting purposes. DO not use "csrf_exempt" in production
+#@csrf_exempt
+#@ensure_csrf_cookie
+def myUpdateData(request):
+    #request contains all info that were passed over form the client side
+    #https://docs.djangoproject.com/en/dev/ref/request-response/#django.http.HttpRequest.body
+    #first check the method to se if it is PUT
+    if request.method == 'PUT':
+        inMethod = "method: " + request.method + ". "
+        inMIME = "MIME: " + request.content_type + ". "
+        #inJSON = "JSON: " + json.loads(request.body) + ". "
+        return HttpResponse(inMethod + inMIME)
+#       return HttpResponse(request.body)
+    else:
+        return HttpResponse("response no update")
