@@ -84,7 +84,7 @@
                       $.ajax({
                         url: 'myUpdateData',
                         type: 'PUT',
-                        data: item,
+                        data: JSON.stringify(item), //returns { pk: 25, mbol: "ZIMUBKK8004895", container: "TEMU7247488" }
                         headers: {'X-CSRFToken': '{{ csrf_token }}'},
                       }).done(function(response){
                         console.log("update response", response)

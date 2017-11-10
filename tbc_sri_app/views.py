@@ -47,7 +47,7 @@ def sritable3(request):
 def myLoadData(request):
 
     #run the query
-    myQuerySet = lnos_statusPipeLine.objects.values('mbol','container')
+    myQuerySet = lnos_statusPipeLine.objects.values('pk','mbol','container')
     #cast from QuerySet to array
     try:
         response_data = list(myQuerySet)
@@ -62,12 +62,31 @@ def myLoadData(request):
 def myUpdateData(request):
     #request contains all info that were passed over form the client side
     #https://docs.djangoproject.com/en/dev/ref/request-response/#django.http.HttpRequest.body
-    #first check the method to se if it is PUT
+    #first check the method to see if it is PUT
     if request.method == 'PUT':
+        #Let's see what data came through
+        print('*' *50) #should print in the dos prompt console
+        print('DEBUG STUFF   ' * 5)
+
+        print("incoming data => ", request.body) #b'{"pk":24,"mbol":"ZIMUBKK8004895","container":"daf"}'
+        strInData = request.body.decode("utf-8")
+        print("strInData => ", strInData) #{"pk":24,"mbol":"ZIMUBKK8004895","container":"daf"}
+        listInData = json.loads(strInData)
+        print("listInData => ", listInData) #{'pk': 24, 'mbol': 'ZIMUBKK8004895', 'container': 'das'}
+        jsonInData = json.dumps(listInData)
+        print("jsonInData => ", jsonInData) #{"pk": 24, "mbol": "ZIMUBKK8004895", "container": "das"}
+        print('*' *50)
+
+        #check few other request detail or fun
         inMethod = "method: " + request.method + ". "
         inMIME = "MIME: " + request.content_type + ". "
-#        inPayLoad = "payload: " + request.body + " "
-#        return HttpResponse(inPayLoad) # this doesn't work due to bytes vs str
-        return HttpResponse(request.body)
+
+        #try to load the data into the model
+#        for deserialized_object in serializers.deserialize("json", request.body):
+#            deserialized_object.save()
+        foo = lnos_statusPipeLine(**listInData)
+        foo.save()
+
+        return HttpResponse(strInData)
     else:
         return HttpResponse("response no update")
