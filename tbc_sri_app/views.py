@@ -7,6 +7,12 @@ from django.http import HttpRequest #https://docs.djangoproject.com/en/dev/ref/r
 from django.core import serializers
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
+# Make normal views return API data
+from rest_framework import generics
+
+#=================================
+# my imports
+from tbc_sri_app.serializers import lnosStatusPipeLineSerializer
 
 #=================================
 #for debugging
@@ -90,3 +96,11 @@ def myUpdateData(request):
         return HttpResponse(strInData)
     else:
         return HttpResponse("response no update")
+
+#default view for DRF is the APIView. Allows for GET, PUT and DELETE methods
+class myRest(generics.ListAPIView):
+    #tell DRF which model to work on
+    model = lnos_statusPipeLine
+    #tell DRF how to return the information
+    serializer_class = lnosStatusPipeLineSerializer
+    queryset = lnos_statusPipeLine.objects.all()

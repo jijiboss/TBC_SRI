@@ -1,5 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from rest_framework.urlpatterns import format_suffix_patterns # for the rest framework
+from tbc_sri_app import views #for the rest framework
 
 #
 from . import views
@@ -18,4 +20,5 @@ urlpatterns = [
     url(r'^jquery01$', views.jquery01, name='jquery01'),
     url(r'^myLoadData$', views.myLoadData, name='myLoadData'),
     url(r'^myUpdateData$', views.myUpdateData, name='myUpdateData'),
+    url(r'^myRest$', views.myRest.as_view(), name='myRest'),
 ]
