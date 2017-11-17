@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^jquery01$', views.jquery01, name='jquery01'),
     url(r'^myLoadData$', views.myLoadData, name='myLoadData'),
     url(r'^myUpdateData$', views.myUpdateData, name='myUpdateData'),
+    url(r'^myLoadData02$', views.myLoadData02, name='myLoadData02'),
+    url(r'^myUpdateData02/(?P<pk>[0-9]+)$', views.myUpdateData02, name='myUpdateData02'),
 ]
