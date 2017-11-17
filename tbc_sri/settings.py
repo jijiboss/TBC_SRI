@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles', #https://docs.djangoproject.com/en/dev/howto/static-files/deployment/
     'tbc_sri_app',
     'import_export',
+    'rest_framework'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -75,11 +75,13 @@ def myUpdateData(request):
         print("listInData => ", listInData) #{'pk': 24, 'mbol': 'ZIMUBKK8004895', 'container': 'das'}
         jsonInData = json.dumps(listInData)
         print("jsonInData => ", jsonInData) #{"pk": 24, "mbol": "ZIMUBKK8004895", "container": "das"}
-        print('*' *50)
 
         #check few other request detail or fun
         inMethod = "method: " + request.method + ". "
+        print("inMethod => ", inMethod)
         inMIME = "MIME: " + request.content_type + ". "
+        print("inMIME => ", inMIME)
+        print('*' *50)
 
         #try to load the data into the model
 #        for deserialized_object in serializers.deserialize("json", request.body):
