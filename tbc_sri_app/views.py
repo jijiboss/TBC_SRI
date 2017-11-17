@@ -1,17 +1,27 @@
 from django.shortcuts import render
 from django.template import loader
-from .models import lnos_statusPipeLine
 from django.forms import model_to_dict
-from django.http import HttpResponse
-from django.http import HttpRequest #https://docs.djangoproject.com/en/dev/ref/request-response/
 from django.core import serializers
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
+
+#=================================
+from django.http import HttpResponse
+from django.http import HttpRequest #https://docs.djangoproject.com/en/dev/ref/request-response/
+#from django.http import Http404
+
+#=================================
 # Make normal views return API data
 from rest_framework import generics
+from rest_framework import mixins
+#from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.request import Request
 
 #=================================
 # my imports
+from .models import lnos_statusPipeLine
 from tbc_sri_app.serializers import lnosStatusPipeLineSerializer
 
 #=================================
@@ -97,10 +107,33 @@ def myUpdateData(request):
     else:
         return HttpResponse("response no update")
 
-#default view for DRF is the APIView. Allows for GET, PUT and DELETE methods
-class myRest(generics.ListAPIView):
+#class myRest(generics.ListAPIView):
+class myRest(generics.ListCreateAPIView):
+#class myRest(generics.RetrieveUpdateAPIView):
     #tell DRF which model to work on
     model = lnos_statusPipeLine
     #tell DRF how to return the information
     serializer_class = lnosStatusPipeLineSerializer
     queryset = lnos_statusPipeLine.objects.all()
+
+#=======================================================
+#Attempts in getting PUT working.
+#All good up to here and with GET only.
+
+#class myPutRest(generics.RetrieveUpdateDestroyAPIView):
+class myPutRest(generics.UpdateAPIView):
+    #tell DRF which model to work on
+    model = lnos_statusPipeLine
+    #tell DRF how to return the information
+    serializer_class = lnosStatusPipeLineSerializer
+    queryset = lnos_statusPipeLine.objects.all()
+    def update(self, request, *args, **kwargs):
+        inObject = self.get_object()
+        inSerialized = self.get_serializer(inObject, data=request.data)
+        inSerialized.is_valid(raise_exception = True)
+        print("RAW ", inSerialized)
+        print("DATA ", inSerialized.data)
+        return Response(inSerialized.data)
+
+#    def put(self, request, pk, format=None):
+#        return Response({'received data': request.data})

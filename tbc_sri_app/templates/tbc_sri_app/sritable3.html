@@ -63,8 +63,8 @@
                     loadData: function(){
                         var d = $.Deferred();
                         $.ajax({
-//                          url: 'myLoadData',
                           url: 'myRest',
+//                          url: 'myPutRest',
                           type: 'GET',
                           contentType : "application/json; charset=utf-8",
                           dataType: 'json',
@@ -72,18 +72,21 @@
                           console.log("load response", response)
                           d.resolve(response);
                         }).fail(function(response){
-                          console.log("Load failed", responsef)
+                          console.log("Load failed", response)
                           d.reject();
                         });
                         return d.promise();
                     },
 
                     updateItem: function(item){
-                      console.log("updateItem data", item);
                       console.log("previousItem", previousItem);
                       var d = $.Deferred();
+                      var thisPK = item["pk"] //need to get the pk to pass with the PUT request
+                      console.log("thisPK is now ", thisPK)
+                      console.log("updateItem data", item);
                       $.ajax({
-                        url: 'myUpdateData',
+//                        url: 'myUpdateData',
+                        url: 'myPutRest/' + thisPK,
                         type: 'PUT',
                         data: JSON.stringify(item), //returns { pk: 25, mbol: "ZIMUBKK8004895", container: "TEMU7247488" }
                         headers: {'X-CSRFToken': '{{ csrf_token }}'},
