@@ -27,7 +27,7 @@ from .models import lnos_statusPipeLine
         stream = BytesIO(content)
         data = JSONParser().parse(stream)
 
-    #retore this into a fully populated object instance
+    #restore this into a fully populated object instance
         serializer = MySerializer(data = data)
         serliazlier.is_valid()
         serializer.validated_data
@@ -57,4 +57,5 @@ class lnosStatusPipeLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = lnos_statusPipeLine #model i am trying to serialize
         fields = ('pk', 'mbol', 'container') #what attributes to return upon request
+#        fields = ('mbol', 'container') #what attributes to return upon request
         #fields = '__all__' #or return everything

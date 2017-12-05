@@ -51,6 +51,7 @@
                   pageSize: 15,
                   pageButtonCount: 5,
                   deleteConfirm: "Do you really want to delete the client?",
+                  insertRowLocation: "top",
 
                   fields: [
                       { name: "mbol", type: "text", width: 100 },
@@ -77,6 +78,26 @@
                         return d.promise();
                     },
 
+                    insertItem: function(item){
+                      var d = $.Deferred();
+                      console.log("insertItem data", item);
+                      $.ajax({
+                        url: 'myLoadData02',
+                        type: 'POST',
+                        contentType : "application/json; charset=utf-8",
+                        dataType: 'json',
+                        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                        data: JSON.stringify(item), //returns { pk: 25, mbol: "ZIMUBKK8004895", container: "TEMU7247488" }
+                      }).done(function(response){
+                        console.log("insert response", response)
+                        d.resolve(response);
+                      }).fail(function(response){
+                        console.log("Insert failed response", response.responseText)
+                        d.reject();
+                      });
+                      return d.promise();
+                    },
+
                     updateItem: function(item){
                       console.log("previousItem", previousItem);
                       var d = $.Deferred();
@@ -96,7 +117,8 @@
                         d.resolve(previousItem);
                       });
                       return d.promise();
-                    }
+                    },
+
                   },
               });
           });
