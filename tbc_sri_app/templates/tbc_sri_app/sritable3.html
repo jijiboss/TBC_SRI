@@ -119,6 +119,26 @@
                       return d.promise();
                     },
 
+                    deleteItem: function(item){
+                        var d = $.Deferred();
+                        var thisPK = item["pk"] //need to get the pk to pass with the DELETE request
+                        console.log("thisPK is now ", thisPK)
+                        console.log("updateItem data", item);
+                        $.ajax({
+                          url: 'myUpdateData02/' + thisPK,
+                          type: 'DELETE',
+                          data: JSON.stringify(item), //returns { pk: 25, mbol: "ZIMUBKK8004895", container: "TEMU7247488" }
+                          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                        }).done(function(response){
+                          console.log("update response", response)
+                          d.resolve(response);
+                        }).fail(function(response){
+                          console.log("Update failed response", response.responseText)
+                          d.resolve(previousItem);
+                        });
+                        return d.promise();
+                      },
+
                   },
               });
           });
