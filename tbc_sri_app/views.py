@@ -1,13 +1,22 @@
 from django.shortcuts import render
 from django.template import loader
-from .models import lnos_statusPipeLine
-from django.forms import model_to_dict
-from django.http import HttpResponse
+#from django.forms import model_to_dict
+#from django.http import HttpResponse #replaced by .Response
+#from django.http import JsonResponse #replaced by .Response
 from django.http import HttpRequest #https://docs.djangoproject.com/en/dev/ref/request-response/
 from django.core import serializers
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from .models import lnos_statusPipeLine
+from .serializers import lnosStatusPipeLineSerializer
+#=================================
+#for REST framework
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 #=================================
 #for debugging
 #https://pythonconquerstheuniverse.wordpress.com/2009/09/10/debugging-in-python/
@@ -16,27 +25,16 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 #just for experimenting purposes. DO not use "csrf_exempt" in production
 #from django.views.decorators.csrf import csrf_exempt
 #=================================
-def detail(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
-
-def helloWorld(request, namae):
-    return HttpResponse("Hello world %s!" % namae)
-
 def index(request):
     #add code here
     #https://docs.djangoproject.com/en/1.11/intro/tutorial03/#a-shortcut-render
     return render(request, 'tbc_sri_app/index.html')
 
-def sritable(request):
-    return render(request, 'tbc_sri_app/sritable.html')
-
-def jquery01(request):
-    return render(request, 'tbc_sri_app/jquery01.html')
-
 def sritable3(request):
     #load in the template and create a variable as a reference to the template
     template = loader.get_template('tbc_sri_app/sritable3.html')
     return render(request, 'tbc_sri_app/sritable3.html')
+
 
 #I can test this method by calling this URL on the browser directly.
 #if successful, i shoudl see the query results.
@@ -44,49 +42,114 @@ def sritable3(request):
 #The Response tab will have the actual returned data, or "failure".
 #Also can test out this query and result by tryin them on the python shell;
 #   python manage.py shell
-def myLoadData(request):
+#Take 2 in attept to understand REST better
+#http://www.django-rest-framework.org/tutorial/1-serialization/#using-modelserializers
+@api_view(['GET', 'POST'])
+def myLoadData02(request):
+    #List all existing or create new
+    print("===============================================")
+    if request.method == 'GET':
+        cargo = lnos_statusPipeLine.objects.all()
+        serializer = lnosStatusPipeLineSerializer(cargo, many = True)
+        print("===============================================")
+        #return JsonResponse(serializer.data, safe = False) #Replaced by .Response and @api_view
+        return Response(serializer.data)
 
-    #run the query
-    myQuerySet = lnos_statusPipeLine.objects.values('pk','mbol','container')
-    #cast from QuerySet to array
+    elif request.method == 'POST':
+        #JSONParser() => parse request content that is in JSON format
+        #.parse(request) => parse stream-like object representing the body of the request
+        #http://www.django-rest-framework.org/api-guide/parsers/#custom-parsers
+        #parse the stream into Python native data type
+        #then turn that into a dictionary of validated data
+        print("LoadData:POST request => ", request)
+        data = JSONParser().parse(request) #dict at this point
+        print("LoadData:POST data => ", data)
+        serializer = lnosStatusPipeLineSerializer(data = data)
+        """
+        #Supposedly no longer necessary to manually convert input stream into dict after using the api_view
+        #instead simply call the serializer passing the request.data as below
+        serializer = lnosStatusPipeLineSerializer(data=request.data)
+        """
+        print("LoadData:POST attempt => ", serializer)
+        if serializer.is_valid():
+            serializer.save()
+            print("LoadData:POST successful => ", serializer)
+            print("===============================================")
+            #return JsonResponse(serializer.data, status = 201) #replaced by .Response and .status and @api_view
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        print("===============================================")
+        #return JsonResponse(serializer.errors, status = 400) #replaced by .Response and .status and @api_view
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def myUpdateData02(request, pk):
+
+    print("===============================================")
+    """
+        #Retrieve, update or delete
+        Because I need to pass pk, need to update the JS with the following...
+            var thisPK = item["pk"] //need to get the pk to pass with the PUT request
+            ...
+            url: 'myUpdateData02/' + thisPK,
+            ...
+        Then update urls.py accordingly
+            url(r'^myUpdateData02/(?P<pk>[0-9]+)$', views.myUpdateData02, name='myUpdateData02'),
+    """
+
+    #try getting the 'pk' instance
     try:
-        response_data = list(myQuerySet)
-    except:
-        response_data = 'Failed to query data.'
-    #convert the aray to JSON and return
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+        cargo = lnos_statusPipeLine.objects.get(pk = pk)
+    #return Not Found 404 if not found
+    except lnos_statusPipeLine.DoesNotExist:
+        print("===============================================")
+        #return HttpResponse(status = 404) #replaced by .Response and .status and @api_view
+        return Response(status = status.HTTP_404_NOT_FOUND)
 
-#just for experimenting purposes. DO not use "csrf_exempt" in production
-#@csrf_exempt
-#@ensure_csrf_cookie
-def myUpdateData(request):
-    #request contains all info that were passed over form the client side
-    #https://docs.djangoproject.com/en/dev/ref/request-response/#django.http.HttpRequest.body
-    #first check the method to see if it is PUT
-    if request.method == 'PUT':
-        #Let's see what data came through
-        print('*' *50) #should print in the dos prompt console
-        print('DEBUG STUFF   ' * 5)
+    #GET
+    if request.method == 'GET':
+        #Serializer will return the instance object in Python native format
+        serializer = lnosStatusPipeLineSerializer(cargo)
+        #Return JSON-fied representation of the instance data
+        print("===============================================")
+        #return JsonResponse(serializer.data) #replaced by .Response and @api_view
+        return Response(serializer.data)
 
-        print("incoming data => ", request.body) #b'{"pk":24,"mbol":"ZIMUBKK8004895","container":"daf"}'
-        strInData = request.body.decode("utf-8")
-        print("strInData => ", strInData) #{"pk":24,"mbol":"ZIMUBKK8004895","container":"daf"}
-        listInData = json.loads(strInData)
-        print("listInData => ", listInData) #{'pk': 24, 'mbol': 'ZIMUBKK8004895', 'container': 'das'}
-        jsonInData = json.dumps(listInData)
-        print("jsonInData => ", jsonInData) #{"pk": 24, "mbol": "ZIMUBKK8004895", "container": "das"}
-        print('*' *50)
+    #PUT
+    elif request.method == 'PUT':
 
-        #check few other request detail or fun
-        inMethod = "method: " + request.method + ". "
-        inMIME = "MIME: " + request.content_type + ". "
+        #JSONParser() => parse request content that is in JSON format
+        #.parse(request) => parse stream-like object representing the body of the request
+        #parse the stream into Python native data type
+        #then turn that into a dictionary of validated data
+        #LoadData:PUT attempt =>  {'pk': 25, 'mbol': 'mbol01', 'container': 'container02'}
+        #this updates fine
+        data = JSONParser().parse(request) #dict at this point
+        print("LoadData:PUT attempt => ", data)
+        serializer = lnosStatusPipeLineSerializer(cargo, data = data)
 
-        #try to load the data into the model
-#        for deserialized_object in serializers.deserialize("json", request.body):
-#            deserialized_object.save()
-        foo = lnos_statusPipeLine(**listInData)
-        foo.save()
+        """
+        #Supposedly no longer necessary to manually convert input stream into dict after using the api_view
+        #But this does not update as expected.
+        #request.data returns a QueryDict instead of a dict
+        serializer = lnosStatusPipeLineSerializer(cargo, data = request.data)
+        print("LoadData:PUT attempt => ", request.data)
+        #LoadData:PUT attempt =>  <QueryDict: {'{"pk":25,"mbol":"mbol01","container":"container02"}': ['']}>
+        #Tried dict(request.data) which would pass this
+        #LoadData:PUT attempt =>  {'{"pk":25,"mbol":"mbol01","container":"container02"}': ['']}
+        """
 
-        return HttpResponse(strInData)
-    else:
-        return HttpResponse("response no update")
+        if serializer.is_valid():
+            serializer.save()
+            print("UpdateData:PUT successful => ", serializer.data)
+            print("===============================================")
+            #return JsonResponse(serializer.data)  #replaced by .Response and @api_view
+            return Response(serializer.data)
+        print("===============================================")
+        #return JsonResponse(serializer.errors, status = 400)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        cargo.delete()
+        print("===============================================")
+        #return HttpResponse(status = 204) #replaced by .Response and .status and @api_view
+        return Response(status = status.HTTP_204_NO_CONTENT)
