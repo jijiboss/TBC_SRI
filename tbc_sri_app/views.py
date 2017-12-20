@@ -1,8 +1,5 @@
 from django.shortcuts import render
 from django.template import loader
-#from django.forms import model_to_dict
-#from django.http import HttpResponse #replaced by .Response
-#from django.http import JsonResponse #replaced by .Response
 from django.http import HttpRequest #https://docs.djangoproject.com/en/dev/ref/request-response/
 from django.core import serializers
 import json
@@ -18,6 +15,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 #=================================
+#for authentication
+from django.contrib.auth.decorators import login_required
+#=================================
 #for debugging
 #https://pythonconquerstheuniverse.wordpress.com/2009/09/10/debugging-in-python/
 #import pdb
@@ -32,7 +32,8 @@ def index(request):
 
 def baseGeneric(request):
     return render(request, 'base_generic.html')
-    
+
+@login_required
 def sritable3(request):
     #load in the template and create a variable as a reference to the template
     template = loader.get_template('tbc_sri_app/sritable3.html')
