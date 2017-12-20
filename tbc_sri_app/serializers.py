@@ -56,6 +56,6 @@ class lnosStatusPipeLineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = lnos_statusPipeLine #model i am trying to serialize
-        fields = ('pk', 'mbol', 'container') #what attributes to return upon request
+        fields = ('pk', 'mbol', 'hbol', 'container', 'pol', 'vessel_departure', 'destination', 'vessel_arrival', 'carrier', 'vessel') #what attributes to return upon request
 #        fields = ('mbol', 'container') #what attributes to return upon request
         #fields = '__all__' #or return everything

@@ -58,7 +58,7 @@ ROOT_URLCONF = 'tbc_sri.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['/templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,3 +113,6 @@ STATICFILES_DIRS = (
 STATIC_ROOT =  os.path.join(BASE_DIR, 'staticfiles')
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/tbc_sri_app/sritable3'
