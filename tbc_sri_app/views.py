@@ -9,8 +9,8 @@ from .models import lnos_statusPipeLine
 from .serializers import lnosStatusPipeLineSerializer
 #=================================
 #for REST framework
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer #for converting dict into JSON to send out
+from rest_framework.parsers import JSONParser #for converting JSON received into dict
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -65,8 +65,15 @@ def myLoadData02(request):
         #http://www.django-rest-framework.org/api-guide/parsers/#custom-parsers
         #parse the stream into Python native data type
         #then turn that into a dictionary of validated data
+        #...but...
+        #none of this is necessary because when request.data is accessed REST automatically does the conversion.
+        #so all i have to do is data = request.data.
+        # see https://stackoverflow.com/questions/28114514/json-parse-error-using-post-in-django-rest-api
+        #note that this would only work if the header specifies that the contentType is json
         print("LoadData:POST request => ", request)
-        data = JSONParser().parse(request) #dict at this point
+        print("LoadData:POST request.data => ", request.data)
+        data = request.data #dict at this point
+#        data = JSONParser().parse(request) #dict at this point
         print("LoadData:POST data => ", data)
         serializer = lnosStatusPipeLineSerializer(data = data)
         """
@@ -125,9 +132,12 @@ def myUpdateData02(request, pk):
         #.parse(request) => parse stream-like object representing the body of the request
         #parse the stream into Python native data type
         #then turn that into a dictionary of validated data
-        #LoadData:PUT attempt =>  {'pk': 25, 'mbol': 'mbol01', 'container': 'container02'}
-        #this updates fine
-        data = JSONParser().parse(request) #dict at this point
+        #...but...
+        #none of this is necessary because when request.data is accessed REST automatically does the conversion.
+        #so all i have to do is data = request.data.
+        # see https://stackoverflow.com/questions/28114514/json-parse-error-using-post-in-django-rest-api
+        #note that this would only work if the header specifies that the contentType is json
+        data = request.data
         print("LoadData:PUT attempt => ", data)
         serializer = lnosStatusPipeLineSerializer(cargo, data = data)
 
