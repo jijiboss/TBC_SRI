@@ -1,9 +1,10 @@
 {% extends 'header.html' %}
 
+{% load staticfiles %}
 {% block content %}
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>jsGrid - Basic and OData hybrid with my data</title>
+    {% block title %} TBC Shipment Status {% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static "jsgrid-1.5.3/demos/demos.css" %}"/>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600,400' rel='stylesheet' type='text/css'>
 
@@ -26,7 +27,6 @@
     <script src="{% static "jsgrid-1.5.3/src/fields/jsgrid.field.control.js" %}"></script>
 </head>
 <body>
-    <h1>Basic and OData hybrid with my data</h1>
     <div id="jsGrid"></div>
 
       <script>
@@ -50,7 +50,7 @@
                   autoload: true,
                   pageSize: 15,
                   pageButtonCount: 5,
-                  deleteConfirm: "Do you really want to delete the client?",
+                  deleteConfirm: "Do you really want to delete the row?",
                   insertRowLocation: "top",
 
                   fields: [
