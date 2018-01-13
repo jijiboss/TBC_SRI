@@ -30,6 +30,12 @@ def index(request):
     #https://docs.djangoproject.com/en/1.11/intro/tutorial03/#a-shortcut-render
     return render(request, 'tbc_sri_app/index.html')
 
+def hello(request):
+    return render(request, 'tbc_sri_app/hello.html')
+
+def jquery01(request):
+    return render(request, 'tbc_sri_app/jquery01.html')
+
 def baseGeneric(request):
     return render(request, 'base_generic.html')
 

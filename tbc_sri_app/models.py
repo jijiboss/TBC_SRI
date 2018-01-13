@@ -2,13 +2,16 @@ from django.db import models
 
 class lnos_statusPipeLine(models.Model):
 
-    carrier = models.CharField(max_length = 24, blank=True)
-    vessel = models.CharField(max_length = 40, blank=True)
-    voyage = models.CharField(max_length = 40, blank=True)
-    destination = models.CharField(max_length = 40, blank=True)
+    container = models.CharField(max_length = 24, blank=True)
+    placeofdelivery = models.CharField(max_length = 64, blank=True) #our final place of delivery
     mbol = models.CharField(max_length = 24, blank=True)
     hbol = models.CharField(max_length = 24, blank=True)
-    container = models.CharField(max_length = 24, blank=True)
+    pol = models.CharField(max_length = 64, blank=True)
+    carrier = models.CharField(max_length = 24, blank=True)
+    bookingnumber = models.CharField(max_length = 128, blank=True)
+    vessel = models.CharField(max_length = 40, blank=True)
+    voyage = models.CharField(max_length = 40, blank=True)
+    destination = models.CharField(max_length = 40, blank=True) #vessel destination
     out_gate = models.CharField(max_length = 128, blank=True)
     return_container = models.CharField(max_length = 128, blank=True)
     empty_equipment_dispatched = models.CharField(max_length = 128, blank=True)
@@ -27,8 +30,6 @@ class lnos_statusPipeLine(models.Model):
     eta_inbound_door = models.CharField(max_length = 128, blank=True)
     estimated_delivery = models.CharField(max_length = 128, blank=True)
     delivered = models.CharField(max_length = 128, blank=True)
-    pol = models.CharField(max_length = 64, blank=True)
-    placeofdelivery = models.CharField(max_length = 64, blank=True)
     etd_pol = models.DateTimeField(null=True, blank=True)
     eta_pod = models.DateTimeField(null=True, blank=True)
     eta_placeofdelivery = models.DateTimeField(null=True, blank=True)
@@ -43,7 +44,6 @@ class lnos_statusPipeLine(models.Model):
     loaded_on_vessel = models.CharField(max_length = 128, blank=True)
     vessel_arrived_at_transit_port = models.CharField(max_length = 128, blank=True)
     vessel_departed_from_transit_port = models.CharField(max_length = 128, blank=True)
-    bookingnumber = models.CharField(max_length = 128, blank=True)
 
 
 
